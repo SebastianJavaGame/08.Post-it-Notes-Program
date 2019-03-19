@@ -13,6 +13,7 @@ import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -23,8 +24,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
+import scislak.popupmenu.CreatePopupMenu;
+
 public class Stick extends JFrame{	
 	private static final long serialVersionUID = 1L;
+	private static boolean isIcon = false;
+	private CreatePopupMenu menu;
 	private JTextArea area;
 	private Point coord;
 	
@@ -37,22 +42,29 @@ public class Stick extends JFrame{
 		setLocationRelativeTo(null);
 		setUndecorated(true);
 		addInside();
-		addIcon();
+		if(!isIcon) addIcon();
 		setVisible(true);
+		menu = new CreatePopupMenu();
+		menu.create(this);
 	}
 	
 	private void addInside() {
 		coord = null;
-		JPanel titleBar = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		JPanel titleBar = new JPanel(new BorderLayout());
+		JPanel titleBarButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		JPanel titleBarTitle = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		JLabel title = new JLabel("New stick");
-		JButton exitButton = new JButton("X");
-		JButton minimalizeButton = new JButton("-");
+		JButton minimalizeButton = ClearButton.buttonAsImage("resources/menu.png");		
+		JButton exitButton = ClearButton.buttonAsImage("resources/error.png");
+		
 		area = new JTextArea();
 		area.setBackground(Color.YELLOW);
 		area.setFont(new Font("Serif", Font.ITALIC, 15));
-		titleBar.add(minimalizeButton);
-		titleBar.add(exitButton);
-		titleBar.add(title, FlowLayout.LEFT);
+		titleBar.add(BorderLayout.CENTER, titleBarTitle);
+		titleBar.add(BorderLayout.EAST, titleBarButtons);
+		titleBarTitle.add(title);
+		titleBarButtons.add(minimalizeButton);
+		titleBarButtons.add(exitButton);
 		add(BorderLayout.NORTH, titleBar);
 		getContentPane().add(area);
 		
@@ -95,10 +107,10 @@ public class Stick extends JFrame{
 			}
 		});
 		
-		minimalizeButton.addActionListener(new ActionListener() {			
+		minimalizeButton.addMouseListener(new MouseAdapter() {			
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				setState(JFrame.ICONIFIED);
+			public void mouseClicked(MouseEvent e) {
+				menu.show(minimalizeButton.getLocationOnScreen());
 			}
 		});
 	}
@@ -106,11 +118,12 @@ public class Stick extends JFrame{
 	private void addIcon() {
 		Toolkit mainToolkit = Toolkit.getDefaultToolkit();
 		SystemTray mainTray = SystemTray.getSystemTray();
-		Image trayIconImage = mainToolkit.getImage("C:\\Users\\Sebastian\\Desktop\\logo1.jpg");
+		Image trayIconImage = mainToolkit.getImage("resources/logo.png");
 		TrayIcon mainTrayIcon = new TrayIcon(trayIconImage);
 		mainTrayIcon.setImageAutoSize(true);
 		try {
 			mainTray.add(mainTrayIcon);
+			isIcon = true;
 		} catch (AWTException e) {}
 		mainTrayIcon.addActionListener(new ActionListener() {
 			
