@@ -1,6 +1,5 @@
 package scislak.popupmenu;
 
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -10,11 +9,14 @@ import javax.swing.JPopupMenu;
 
 import scislak.program.Stick;
 
-public class CreatePopupMenu {
-	private JPopupMenu menu;
-	private JFrame frame;
+public class CreatePopupMenu extends GeneralPopupMenu{
 	
-	public void create(JFrame frame) {
+	public CreatePopupMenu(JFrame frame) {
+		super(frame);
+	}
+	
+	@Override
+	protected void create() {
 		menu = new JPopupMenu();
 		JMenuItem newStick = new JMenuItem("New Stick");
 		JMenuItem deleteStick = new JMenuItem("Delete Stick");
@@ -28,10 +30,6 @@ public class CreatePopupMenu {
 		addNewStickListener(newStick);
 		addDeleteStickListener(deleteStick);
 		addExitListener(exit);
-	}
-	
-	public void show(Point e) {
-		menu.show(frame, (int)e.getX(), (int)e.getY()+20);
 	}
 	
 	//Implementation privates listeners

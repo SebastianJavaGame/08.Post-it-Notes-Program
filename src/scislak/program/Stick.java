@@ -1,25 +1,49 @@
 package scislak.program;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
+import java.awt.AWTException;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.SystemTray;
+import java.awt.Toolkit;
+import java.awt.TrayIcon;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.border.LineBorder;
 
 import scislak.popupmenu.CreatePopupMenu;
+import scislak.popupmenu.IconPopup;
 
 public class Stick {
     private JFrame frame = new JFrame();
+    private CreatePopupMenu menuStick;
+    private IconPopup menuIcon;
     private static boolean isIcon = false;
-    private CreatePopupMenu menu;
     
     public Stick() {
     	createAnsShowGui();
     	createFunctionality();
+    	menuStick = new CreatePopupMenu(frame);
+    	menuIcon = new IconPopup(frame);
     }
 
     class MainPanel extends JPanel {
+		private static final long serialVersionUID = 1L;
 
-        public MainPanel() {
+		public MainPanel() {
         	setLayout(new BorderLayout());
             JTextArea area = new JTextArea();
     		area.setBackground(Color.YELLOW);
@@ -35,8 +59,7 @@ public class Stick {
     }
 
     class BorderPanel extends JPanel {
-
-        private JLabel label;
+		private static final long serialVersionUID = 1L;
         int pX, pY;
 
         public BorderPanel() {
@@ -47,9 +70,6 @@ public class Stick {
     		JLabel title = new JLabel("New stick");
         	JButton minimalizeButton = ClearButton.buttonAsImage("resources/menu.png");		
     		JButton exitButton = ClearButton.buttonAsImage("resources/error.png");	
-            
-    		menu = new CreatePopupMenu();
-    		menu.create(frame);
     		
     		add(BorderLayout.CENTER, titleBarTitle);
     		add(BorderLayout.EAST, titleBarButtons);
@@ -60,7 +80,7 @@ public class Stick {
     		minimalizeButton.addMouseListener(new MouseAdapter() {			
     			@Override
     			public void mouseClicked(MouseEvent e) {
-    				menu.show(minimalizeButton.getLocationOnScreen());
+    				menuStick.show(minimalizeButton.getLocationOnScreen());
     			}
     		});
     		
@@ -94,8 +114,9 @@ public class Stick {
     }
 
     class OutsidePanel extends JPanel {
+		private static final long serialVersionUID = 1L;
 
-        public OutsidePanel() {
+		public OutsidePanel() {
             setLayout(new BorderLayout());
             add(new MainPanel(), BorderLayout.CENTER);
             add(new BorderPanel(), BorderLayout.PAGE_START);
@@ -131,11 +152,10 @@ public class Stick {
 			mainTray.add(mainTrayIcon);
 			isIcon = true;
 		} catch (AWTException e) {}
-		mainTrayIcon.addActionListener(new ActionListener() {
-			
+		mainTrayIcon.addActionListener(new ActionListener() {			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("adf");
+				menuIcon.show(new Point(100, 100));
 			}
 		});
 	}
