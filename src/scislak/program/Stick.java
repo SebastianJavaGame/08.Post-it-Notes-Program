@@ -7,12 +7,9 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
-import java.awt.Point;
 import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -34,10 +31,10 @@ public class Stick {
     private static boolean isIcon = false;
     
     public Stick() {
-    	createAnsShowGui();
-    	createFunctionality();
     	menuStick = new CreatePopupMenu(frame);
     	menuIcon = new IconPopup(frame);
+    	createAnsShowGui();
+    	createFunctionality();
     }
 
     class MainPanel extends JPanel {
@@ -143,20 +140,17 @@ public class Stick {
     }
     
     private void addIcon() {
-		Toolkit mainToolkit = Toolkit.getDefaultToolkit();
-		SystemTray mainTray = SystemTray.getSystemTray();
-		Image trayIconImage = mainToolkit.getImage("resources/logo.png");
-		TrayIcon mainTrayIcon = new TrayIcon(trayIconImage);
-		mainTrayIcon.setImageAutoSize(true);
-		try {
-			mainTray.add(mainTrayIcon);
-			isIcon = true;
-		} catch (AWTException e) {}
-		mainTrayIcon.addActionListener(new ActionListener() {			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				menuIcon.show(new Point(100, 100));
-			}
-		});
+    	TrayIcon trayIcon = null;
+        if (SystemTray.isSupported()) {
+            SystemTray tray = SystemTray.getSystemTray();
+            Image image = Toolkit.getDefaultToolkit().getImage("resources/logo.png");
+            trayIcon = new TrayIcon(image, "Tray Demo", menuIcon.getPopupMenu());
+            trayIcon.setImageAutoSize(true);
+            try {
+                tray.add(trayIcon);
+            } catch (AWTException e) {
+                System.err.println(e);
+            }
+        }
 	}
 }

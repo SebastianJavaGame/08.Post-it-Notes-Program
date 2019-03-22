@@ -1,8 +1,6 @@
 package scislak.popupmenu;
 
 import javax.swing.JFrame;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
 
 public class IconPopup extends GeneralPopupMenu{
 
@@ -10,15 +8,18 @@ public class IconPopup extends GeneralPopupMenu{
 		super(frame);
 	}
 	
-	public void create() {
-		menu = new JPopupMenu();
-		JMenuItem newStick = new JMenuItem("New Stick");
-		JMenuItem deleteStick = new JMenuItem("Delete Stick");
-		JMenuItem exit = new JMenuItem("Exit");
-		
-		menu.add(newStick);
-		menu.add(deleteStick);
-		menu.add(exit);
-		frame.add(menu);
+	@Override
+	protected void create() {
+		addNewStick(); 
+		addNewNoteFromClipboard();
+		addShowAllNotes();
+		addHideAllNotes();
+		addNotebooks();
+		addExplorer();
+		addStore();
+		addSetting();
+		addAbout();
+		addHelp();
+		addExit();
 	}
 }
