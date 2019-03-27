@@ -11,19 +11,21 @@ public class CreatePopupMenu extends GeneralPopupMenu{
 	@Override
 	protected void create() {
 		addNewStick();
-		addChangeColor();
-		addChangeOpacity();
-		addAlarm();
-		addPrint();
-		addShare();
-		addExport();
-		addEditTitle();
-		addDuplicate();
-		addAlwaysOnTop();
-		addLockNote();
-		addMinimize();
-		addHide();
-		addMoveTo();
-		addDeleteNote();
+		//addChangeColor();
+		//addChangeOpacity();
+		//addAlarm();
+		//addPrint();
+		//addShare();
+		//addExport();
+		//addEditTitle();
+		//addDuplicate();
+		//addAlwaysOnTop();
+		//addLockNote();
+		//addMinimize();
+		//addHide();
+		//addMoveTo();
+		//addDeleteNote();
 	}
+	
+	//Method of Popup Frame
 }

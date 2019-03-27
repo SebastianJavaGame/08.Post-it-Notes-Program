@@ -23,9 +23,14 @@ import javax.swing.border.LineBorder;
 
 import scislak.popupmenu.CreatePopupMenu;
 import scislak.popupmenu.IconPopup;
+import scislak.storage.NotesMemory;
 
 public class Stick {
     private JFrame frame = new JFrame();
+    private static NotesMemory memory = new NotesMemory();
+    private static String notebookType = "User";
+    private JLabel title;
+    private JTextArea area;
     private CreatePopupMenu menuStick;
     private IconPopup menuIcon;
     private static boolean isIcon = false;
@@ -35,6 +40,7 @@ public class Stick {
     	menuIcon = new IconPopup(frame);
     	createAnsShowGui();
     	createFunctionality();
+    	memory.addNote(frame.getX(), frame.getY(), title.getText(), area.getText(), notebookType);
     }
 
     class MainPanel extends JPanel {
@@ -42,7 +48,7 @@ public class Stick {
 
 		public MainPanel() {
         	setLayout(new BorderLayout());
-            JTextArea area = new JTextArea();
+            area = new JTextArea();
     		area.setBackground(Color.YELLOW);
     		area.setFont(new Font("Serif", Font.ITALIC, 15));
     		area.setLineWrap(true);
@@ -64,7 +70,7 @@ public class Stick {
         	JPanel titleBarButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     		JPanel titleBarTitle = new JPanel(new FlowLayout(FlowLayout.CENTER));
         	
-    		JLabel title = new JLabel("New stick");
+    		title = new JLabel("New stick");
         	JButton minimalizeButton = ClearButton.buttonAsImage("resources/menu.png");		
     		JButton exitButton = ClearButton.buttonAsImage("resources/error.png");	
     		
@@ -153,4 +159,8 @@ public class Stick {
             }
         }
 	}
+    
+    public static void setNotebookType(String type) {
+    	notebookType = type;
+    }
 }
