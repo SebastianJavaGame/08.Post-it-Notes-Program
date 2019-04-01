@@ -23,8 +23,10 @@ public class StickParameters {
 	
 	public StickParameters(int x, int y, String note) {
 		this.localization = new Point(x, y);
+		this.title = "New Note";
 		this.note = note;
 		this.notebook = DEFAULT_NOTEBOOK;
+		created = LocalDateTime.now();
 	}
 
 	public Point getLocalization() {

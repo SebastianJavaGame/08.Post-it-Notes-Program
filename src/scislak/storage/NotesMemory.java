@@ -50,7 +50,7 @@ public class NotesMemory {
 		}
 	}
 	
-	public void loadAllToPref() {
+	public void loadAllFromPref() {
 		for(int i = 0; i < getStoagedSize(); i++) {
 			int x = prefs.getInt(NOTE_X +i, 10);
 			int y = prefs.getInt(NOTE_Y +i, 10);
@@ -102,5 +102,9 @@ public class NotesMemory {
 
 	public void changeText(int i, String string) {
 		notes.get(i).setNote(string);
+	}
+	
+	public static void setAllNotebooks(ArrayList<String> listOfNotebooks) {
+		notebooks = listOfNotebooks;
 	}
 }
