@@ -36,7 +36,6 @@ public class NotesMemory {
 		notebooks.add(notebook);
 		int actualSize = prefs.getInt(NOTEBOOKS_SIZE, 0)+1;
 		prefs.putInt(NOTEBOOKS_SIZE, actualSize);
-		//prefs.put(NOTEBOOK +actualSize, notebook);
 	}
 	
 	public void addAllToPref() {
@@ -75,8 +74,12 @@ public class NotesMemory {
 			prefs.put(NOTEBOOK +i, notebooks.get(i));
 		}
 	}
+	
+	public static void changeNotebook(int index, String name) {
+		notebooks.set(index, name);
+	}
 
-	public List<String> getNotesbooks(){
+	public static List<String> getNotesbooks(){
 		return notebooks;
 	}
 	
