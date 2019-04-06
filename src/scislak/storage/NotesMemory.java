@@ -7,7 +7,7 @@ import java.util.prefs.Preferences;
 
 public class NotesMemory {
 	private final static String PREF = "PREF";
-	private Preferences prefs = Preferences.systemRoot().node(PREF);
+	private Preferences prefs = Preferences.userRoot().node(PREF);
 	private final static String NOTEBOOKS_SIZE = "NOTEBOOKS_SIZE";
 	private final static String NOTEBOOK = "NOTEBOOK";
 	private final static String NOTEBOOK_TYPE = "NOTEBOOK_TYPE";
@@ -34,8 +34,6 @@ public class NotesMemory {
 	
 	public void addNotebook(String notebook) {
 		notebooks.add(notebook);
-		int actualSize = prefs.getInt(NOTEBOOKS_SIZE, 0)+1;
-		prefs.putInt(NOTEBOOKS_SIZE, actualSize);
 	}
 	
 	public void addAllToPref() {
@@ -62,25 +60,38 @@ public class NotesMemory {
 	}
 	
 	public void loadNotebooks() {
-		String[] notebooksTmp = new String[prefs.getInt(NOTEBOOKS_SIZE, 1)];
+		int size = prefs.getInt(NOTEBOOKS_SIZE, 1);
 		notebooks.clear();
-		for(int i = 0; i < notebooksTmp.length; i++) {
+		for(int i = 0; i < size; i++) {
 			notebooks.add(i, prefs.get(NOTEBOOK +i, "User"));
 		}
 	}
 	
 	public void saveNotebooks() {
+		prefs.putInt(NOTEBOOKS_SIZE, notebooks.size());
 		for(int i = 0; i < notebooks.size(); i++) {
 			prefs.put(NOTEBOOK +i, notebooks.get(i));
 		}
 	}
 	
 	public static void changeNotebook(int index, String name) {
-		notebooks.set(index, name);
+		try {
+			notebooks.set(index, name);
+		}catch(ArrayIndexOutOfBoundsException e) {
+		}
+		catch(IndexOutOfBoundsException e1) {
+		}
 	}
 
 	public static List<String> getNotesbooks(){
 		return notebooks;
+	}
+	
+	public static void changeNotebookOfNote(String oldName, String newName) {
+		for(StickParameters stick: notes) {
+			if(stick.getNotebook().equals(oldName))
+				stick.setNotebook(newName);
+		}
 	}
 	
 	public List<StickParameters> getNotes(){
@@ -105,6 +116,10 @@ public class NotesMemory {
 
 	public void changeText(int i, String string) {
 		notes.get(i).setNote(string);
+	}
+	
+	public static void removeFromNotebook(int index) {
+		notebooks.remove(index);
 	}
 	
 	public static void setAllNotebooks(ArrayList<String> listOfNotebooks) {

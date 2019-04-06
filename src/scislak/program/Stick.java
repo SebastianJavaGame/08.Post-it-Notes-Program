@@ -24,6 +24,7 @@ import javax.swing.border.LineBorder;
 import scislak.popupmenu.CreatePopupMenu;
 import scislak.popupmenu.IconPopup;
 import scislak.storage.NotesMemory;
+import scislak.storage.StickParameters;
 
 public class Stick {
     private JFrame frame = new JFrame();
@@ -41,6 +42,15 @@ public class Stick {
     	createAnsShowGui();
     	createFunctionality();
     	memory.addNote(frame.getX(), frame.getY(), title.getText(), area.getText(), notebookType);
+    }
+    
+    public Stick(StickParameters stickParam) {
+    	menuStick = new CreatePopupMenu(frame);
+    	menuIcon = new IconPopup(frame);
+    	createAnsShowGui();
+    	frame.setLocation(stickParam.getLocalization());
+    	title.setText(stickParam.getTitle());
+    	area.setText(stickParam.getNote());
     }
 
     class MainPanel extends JPanel {
@@ -142,7 +152,11 @@ public class Stick {
     }
     
     private void createFunctionality() {
-    	if(!isIcon) addIcon();
+    	if(!isIcon) {
+    		memory.loadNotebooks();
+    		addIcon();
+    		IconPopup.addNotebooksMenuItems();
+    	}
     }
     
     private void addIcon() {

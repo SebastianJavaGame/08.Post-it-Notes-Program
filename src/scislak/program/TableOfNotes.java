@@ -19,13 +19,14 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 
+import scislak.popupmenu.IconPopup;
 import scislak.storage.NotesMemory;
 import scislak.storage.StickParameters;
 
 public class TableOfNotes extends JFrame{
 	private static final long serialVersionUID = 1L;
 	private JFrame frame;
-	private NotesMemory memory;
+	private static NotesMemory memory = new NotesMemory();
 	private DefaultTableModel notebookModel;
 	private DefaultTableModel noteModel;
 	private JTable notebookTable;
@@ -36,10 +37,10 @@ public class TableOfNotes extends JFrame{
 	public TableOfNotes() {
 		super("Explorer");
 		frame = this;
-		memory = new NotesMemory();
 		notebookModel = new DefaultTableModel();
 		noteModel = new DefaultTableModel();
 		notebookTable = new JTable(notebookModel);
+		notebookNameBeforeChangeName = "";
 		initFrame();
 		initInside();
 	}
@@ -54,6 +55,9 @@ public class TableOfNotes extends JFrame{
 			@Override
 			public void windowClosing(WindowEvent e) {
 				frame.dispose();
+				memory.saveNotebooks();
+				memory.addAllToPref();
+				IconPopup.addNotebooksMenuItems();
 			}
 		});
 	}
@@ -64,7 +68,6 @@ public class TableOfNotes extends JFrame{
 		JLabel titleNotes = new JLabel("Notes");
 		JPanel notebookPanel = new Notebook();
 		JPanel notesPanel = new Notes();
-		
 		
 		this.getContentPane().add(fillBackgroundPanel);
 		titleNoteBook.setBounds(10, 10, 190, 30);
@@ -78,7 +81,7 @@ public class TableOfNotes extends JFrame{
 	}
 	
 	protected void updateNoteTableRow(String filterNotebook) {
-		clearNotesTable();
+		clearTable(noteModel);
 		for(StickParameters stick: memory.getNotes()) {
 			if(stick.getNotebook().equals(filterNotebook))
 				addNoteAsRow(stick);
@@ -89,9 +92,9 @@ public class TableOfNotes extends JFrame{
 		noteModel.addRow(new Object[] {stick.getTitle(), stick.getNotebook(), stick.getCreatedTime()});
 	}
 	
-	private void clearNotesTable() {
-		while(noteModel.getRowCount() > 0)
-		    noteModel.removeRow(0);
+	private void clearTable(DefaultTableModel modelTmp) {
+		while(modelTmp.getRowCount() > 0)
+		    modelTmp.removeRow(0);
 	}
 	
 	class Notebook extends JPanel{
@@ -107,10 +110,11 @@ public class TableOfNotes extends JFrame{
 			
 			notebookTable = new JTable(notebookModel);
 			notebookModel.addColumn("Notebook name");
-			updateNotebookTableRow();
 			JScrollPane scrollPane = new JScrollPane(notebookTable);
 			
+			updateNotebookTableRow();
 			notebookTable.setRowSelectionInterval(0, 0);
+			
 			this.add(BorderLayout.CENTER, scrollPane);
 			this.add(BorderLayout.SOUTH, new ManageExplorerFrame());
 		}
@@ -149,6 +153,7 @@ public class TableOfNotes extends JFrame{
 					if(notebookModel.getRowCount() > 1) {
 						int index = notebookTable.getSelectedRow();
 						deletingIndex = index;
+						NotesMemory.removeFromNotebook(index);
 						notebookModel.removeRow(index);
 					}
 				}
@@ -182,16 +187,19 @@ public class TableOfNotes extends JFrame{
 		
 		private void changeNameListener() {
 			notebookModel.addTableModelListener((TableModelEvent e) ->{
-				int index = getSelectedIndexOfNotebookTable();
 				String name = getSelectedNameOfNotebookTable();
-				NotesMemory.changeNotebook(index, name);
-				changeAllNotebookInNotes(notebookNameBeforeChangeName, name);
-				updateNoteTableRow(name);
+				int index = getSelectedIndexOfNotebookTable();
+				
+				if(!name.equals("")) {
+					NotesMemory.changeNotebook(index, name);
+					changeAllNotebookInNotes(notebookNameBeforeChangeName, name);
+					updateNoteTableRow(name);
+				}
 			});
 		}
 		
 		private void changeAllNotebookInNotes(String oldName, String newName) {
-			//TODO
+			NotesMemory.changeNotebookOfNote(oldName, newName);
 		}
 		
 		private void newNoteListener(JButton button) {
@@ -226,7 +234,7 @@ public class TableOfNotes extends JFrame{
 		try {
 			return notebookModel.getValueAt(actualRowIndex, 0).toString();
 		}catch(ArrayIndexOutOfBoundsException e) {
-			return notebookModel.getValueAt(actualRowIndex-1, 0).toString();
+			return "";
 		}
 	}
 	
@@ -247,11 +255,9 @@ public class TableOfNotes extends JFrame{
 	}
 	
 	protected void updateNotebookTableRow() {	
-		int i = notebookModel.getRowCount();
+		clearTable(notebookModel);
 		for(String notebook: NotesMemory.getNotesbooks()) {
-			if(i == 0) 
-				notebookModel.addRow(new Object[] {notebook});
-			i--;
+			notebookModel.addRow(new Object[] {notebook});
 		}
 	}
 	

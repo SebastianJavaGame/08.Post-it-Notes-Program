@@ -1,6 +1,7 @@
 package scislak.popupmenu;
 
 import java.awt.Desktop;
+import java.awt.Menu;
 import java.awt.MenuItem;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,9 +13,11 @@ import javax.swing.JFrame;
 
 import scislak.program.AboutMe;
 import scislak.program.TableOfNotes;
+import scislak.storage.NotesMemory;
 
 public class IconPopup extends GeneralPopupMenu{
-
+	private static Menu item;
+	
 	public IconPopup(JFrame frame) {
 		super(frame);
 	}
@@ -25,7 +28,7 @@ public class IconPopup extends GeneralPopupMenu{
 		//addNewNoteFromClipboard();
 		//addShowAllNotes();
 		//addHideAllNotes();
-		//addNotebooks();
+		addNotebooks();
 		addExplorer();
 		//addStore();
 		//addSetting();
@@ -38,12 +41,8 @@ public class IconPopup extends GeneralPopupMenu{
 	private void addExit() {
 		MenuItem item = new MenuItem("Exit");
 		menu.add(item);
-		item.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
+		item.addActionListener((ActionEvent e) -> {
 				System.exit(0);
-			}
 		});
 	}
 	
@@ -57,11 +56,8 @@ public class IconPopup extends GeneralPopupMenu{
 				try {
 					Desktop.getDesktop().browse(new URI("https://www.simplestickynotes.com/help/?hl=pl&utm_source=ssn"));
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				} catch (URISyntaxException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
 				}
 			}
 		});
@@ -70,24 +66,37 @@ public class IconPopup extends GeneralPopupMenu{
 	private void addAbout() {
 		MenuItem item = new MenuItem("About");
 		menu.add(item);
-		item.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				new AboutMe();
-			}
+		item.addActionListener((ActionEvent e) -> {
+			new AboutMe();
 		});
 	}
 	
 	private void addExplorer() {
 		MenuItem item = new MenuItem("Explorer");
 		menu.add(item);
-		item.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				new TableOfNotes();
-			}
+		item.addActionListener((ActionEvent e) -> {
+			new TableOfNotes();
 		});
+	}
+	
+	private void addNotebooks() {
+		item = new Menu("Notebooks");
+		menu.add(item);
+		addNotebooksMenuItems();
+	}
+	
+	public static void addNotebooksMenuItems() {
+		item.removeAll();
+		for(String notebook: NotesMemory.getNotesbooks()) {
+			MenuItem notebookItem = new MenuItem(notebook);
+			item.add(notebookItem);
+			notebookItem.addActionListener((ActionEvent) -> {
+				showAllSticksFromNotebook(notebook);
+			});
+		}
+	}
+	
+	private static void showAllSticksFromNotebook(String notebook) {
+		System.out.println(notebook);
 	}
 }
