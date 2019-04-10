@@ -4,6 +4,8 @@ import java.awt.Point;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import javax.swing.JFrame;
+
 public class StickParameters {
 	public static int iterator = 0;
 	public static final String DEFAULT_NOTEBOOK = "User";
@@ -12,20 +14,23 @@ public class StickParameters {
 	private String note;
 	private String notebook;
 	private LocalDateTime created;
+	private JFrame frame;
 	
-	public StickParameters(int x, int y, String title, String note, String notebook) {
+	public StickParameters(int x, int y, String title, String note, String notebook, JFrame frame) {
 		this.localization = new Point(x, y);
 		this.title = title;
 		this.note = note;
 		this.notebook = notebook;
+		this.frame = frame;
 		created = LocalDateTime.now();
 	}
 	
-	public StickParameters(int x, int y, String note) {
+	public StickParameters(int x, int y, String note, JFrame frame) {
 		this.localization = new Point(x, y);
 		this.title = "New Note";
 		this.note = note;
 		this.notebook = DEFAULT_NOTEBOOK;
+		this.frame = frame;
 		created = LocalDateTime.now();
 	}
 
@@ -64,5 +69,13 @@ public class StickParameters {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public JFrame getFrame() {
+		return frame;
+	}
+
+	public void setFrame(JFrame frame) {
+		this.frame = frame;
 	}	
 }

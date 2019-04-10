@@ -207,7 +207,7 @@ public class TableOfNotes extends JFrame{
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					StickParameters stick = new StickParameters(getX(), getY(), "New Note", "Empty", getSelectedNameOfNotebookTable());
+					StickParameters stick = new StickParameters(getX(), getY(), "New Note", "Empty", getSelectedNameOfNotebookTable(), new JFrame());
 					addNoteAsRow(stick);
 					memory.addNote(stick);
 				}

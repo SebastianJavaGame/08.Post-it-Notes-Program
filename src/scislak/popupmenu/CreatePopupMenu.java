@@ -11,6 +11,7 @@ public class CreatePopupMenu extends GeneralPopupMenu{
 	@Override
 	protected void create() {
 		addNewStick();
+		addHideAllNotes();
 		//addChangeColor();
 		//addChangeOpacity();
 		//addAlarm();

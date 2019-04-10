@@ -26,8 +26,8 @@ public class IconPopup extends GeneralPopupMenu{
 	protected void create() {
 		addNewStick(); 
 		//addNewNoteFromClipboard();
-		//addShowAllNotes();
-		//addHideAllNotes();
+		addShowAllNotes();
+		addHideAllNotes();
 		addNotebooks();
 		addExplorer();
 		//addStore();
@@ -36,7 +36,7 @@ public class IconPopup extends GeneralPopupMenu{
 		addHelp();
 		addExit();
 	}
-	
+
 	//Methods of options Popup icon
 	private void addExit() {
 		MenuItem item = new MenuItem("Exit");

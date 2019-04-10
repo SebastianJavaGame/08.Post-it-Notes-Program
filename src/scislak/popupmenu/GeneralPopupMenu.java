@@ -8,6 +8,11 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 
+import scislak.program.AboutMe;
+import scislak.program.Stick;
+import scislak.storage.NotesMemory;
+import scislak.storage.StickParameters;
+
 public abstract class GeneralPopupMenu {
 	protected PopupMenu menu;
 	protected JFrame frame;
@@ -32,7 +37,28 @@ public abstract class GeneralPopupMenu {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("Option 1");
+				new Stick();
+			}
+		});
+	}
+	
+	protected void addShowAllNotes() {
+		MenuItem item = new MenuItem("Show all notes");
+		menu.add(item);
+		item.addActionListener((ActionEvent e) -> {
+			for(Stick stick: NotesMemory.getSticks()) {
+				stick.setShow();
+			}
+		});
+	}
+	
+	protected void addHideAllNotes() {
+		MenuItem item = new MenuItem("Hide all notes");
+		menu.add(item);
+		item.addActionListener((ActionEvent e) -> {
+			for(Stick st: NotesMemory.getSticks()) {
+				st.updateStickParameters();
+				st.setHide();
 			}
 		});
 	}

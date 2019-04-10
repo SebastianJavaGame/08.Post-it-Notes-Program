@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
 
+import javax.swing.JFrame;
+
+import scislak.program.Stick;
+
 public class NotesMemory {
 	private final static String PREF = "PREF";
 	private Preferences prefs = Preferences.userRoot().node(PREF);
@@ -16,20 +20,22 @@ public class NotesMemory {
 	private final static String NOTE_Y = "LOCALIZATION_Y";
 	private final static String NOTE_TEXT = "NOTE_TEXT"; 
 	
+	private static List<Stick> sticks;
 	private static List<StickParameters> notes;
 	private static List<String> notebooks;
 	
 	static {
+		sticks = new ArrayList<Stick>();
 		notes = new ArrayList<StickParameters>();
 		notebooks = new ArrayList<String>();
 	}
 	
 	public void addNote(StickParameters sp) {
-		addNote(sp.getLocalization().x, sp.getLocalization().y, sp.getTitle(), sp.getNote(), sp.getNotebook());
+		addNote(sp.getLocalization().x, sp.getLocalization().y, sp.getTitle(), sp.getNote(), sp.getNotebook(), sp.getFrame());
 	}
 	
-	public void addNote(int x, int y, String title, String note, String notebook) {
-		notes.add(new StickParameters(x, y, title, note, notebook));
+	public void addNote(int x, int y, String title, String note, String notebook, JFrame frame) {
+		notes.add(new StickParameters(x, y, title, note, notebook, frame));
 	}
 	
 	public void addNotebook(String notebook) {
@@ -54,7 +60,7 @@ public class NotesMemory {
 			String title = prefs.get(TITLE +i, "");
 			String notebook = prefs.get(NOTEBOOK_TYPE, StickParameters.DEFAULT_NOTEBOOK);
 			String text = prefs.get(NOTE_TEXT +i, "");
-			StickParameters stick = new StickParameters(x, y, title, text, notebook);
+			StickParameters stick = new StickParameters(x, y, title, text, notebook, new JFrame());
 			addNote(stick);
 		}
 	}
@@ -94,7 +100,7 @@ public class NotesMemory {
 		}
 	}
 	
-	public List<StickParameters> getNotes(){
+	public static List<StickParameters> getNotes(){
 		return notes;
 	}
 	
@@ -122,7 +128,15 @@ public class NotesMemory {
 		notebooks.remove(index);
 	}
 	
+	public static List<Stick> getSticks(){
+		return sticks;
+	}
+	
 	public static void setAllNotebooks(ArrayList<String> listOfNotebooks) {
 		notebooks = listOfNotebooks;
+	}
+
+	public static void addStick(Stick stick) {
+		sticks.add(stick);
 	}
 }

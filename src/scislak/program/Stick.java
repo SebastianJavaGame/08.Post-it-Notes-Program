@@ -41,7 +41,8 @@ public class Stick {
     	menuIcon = new IconPopup(frame);
     	createAnsShowGui();
     	createFunctionality();
-    	memory.addNote(frame.getX(), frame.getY(), title.getText(), area.getText(), notebookType);
+    	memory.addNote(frame.getX(), frame.getY(), title.getText(), area.getText(), notebookType, frame);
+    	NotesMemory.addStick(this);
     }
     
     public Stick(StickParameters stickParam) {
@@ -51,6 +52,7 @@ public class Stick {
     	frame.setLocation(stickParam.getLocalization());
     	title.setText(stickParam.getTitle());
     	area.setText(stickParam.getNote());
+    	stickParam.setFrame(frame);
     }
 
     class MainPanel extends JPanel {
@@ -99,7 +101,8 @@ public class Stick {
     		
             exitButton.addMouseListener(new MouseAdapter() {
                 public void mouseReleased(MouseEvent e) {
-                    System.exit(0);
+                    frame.dispose();
+                    updateStickParameters();
                 }
             });
             addMouseListener(new MouseAdapter() {
@@ -125,6 +128,18 @@ public class Stick {
             });
         }
     }
+    
+    public void updateStickParameters() {
+		for(int i = 0; i < NotesMemory.getNotes().size(); i++) {
+			if(NotesMemory.getNotes().get(i).getFrame() == this.frame) {
+				StickParameters stick = NotesMemory.getNotes().get(i);
+				stick.setLocalization(frame.getLocation());
+				stick.setNote(area.getText());
+				stick.setTitle(title.getText());
+				return;
+			}
+		}
+	}
 
     class OutsidePanel extends JPanel {
 		private static final long serialVersionUID = 1L;
@@ -153,6 +168,7 @@ public class Stick {
     
     private void createFunctionality() {
     	if(!isIcon) {
+    		isIcon = true;
     		memory.loadNotebooks();
     		addIcon();
     		IconPopup.addNotebooksMenuItems();
@@ -176,5 +192,13 @@ public class Stick {
     
     public static void setNotebookType(String type) {
     	notebookType = type;
+    }
+    
+    public void setHide() {
+    	frame.setVisible(false);
+    }
+    
+    public void setShow() {
+    	frame.setVisible(true);
     }
 }
