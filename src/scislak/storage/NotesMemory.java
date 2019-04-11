@@ -13,6 +13,7 @@ public class NotesMemory {
 	private final static String PREF = "PREF";
 	private Preferences prefs = Preferences.userRoot().node(PREF);
 	private final static String NOTEBOOKS_SIZE = "NOTEBOOKS_SIZE";
+	private final static String NOTES_SIZE = "NOTES_SIZE";
 	private final static String NOTEBOOK = "NOTEBOOK";
 	private final static String NOTEBOOK_TYPE = "NOTEBOOK_TYPE";
 	private final static String TITLE = "TITLE";
@@ -42,6 +43,15 @@ public class NotesMemory {
 		notebooks.add(notebook);
 	}
 	
+	public void createSticksFromParameters() {
+		for(StickParameters param: notes) {
+			Stick s = new Stick(param);
+			sticks.add(s);
+			param.getFrame().setAlwaysOnTop(false);
+			s.setShow();
+		}
+	}
+	
 	public void addAllToPref() {
 		for(int i = 0; i < getStoagedSize(); i++) {
 			StickParameters stick = notes.get(i);
@@ -51,10 +61,12 @@ public class NotesMemory {
 			prefs.put(NOTE_TEXT +i, stick.getNote());
 			prefs.put(NOTEBOOK_TYPE +i, stick.getNotebook());
 		}
+		prefs.putInt(NOTES_SIZE, getStoagedSize());
 	}
 	
 	public void loadAllFromPref() {
-		for(int i = 0; i < getStoagedSize(); i++) {
+		int size = prefs.getInt(NOTES_SIZE, 0);
+		for(int i = 0; i < size; i++) {
 			int x = prefs.getInt(NOTE_X +i, 10);
 			int y = prefs.getInt(NOTE_Y +i, 10);
 			String title = prefs.get(TITLE +i, "");

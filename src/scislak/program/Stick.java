@@ -10,15 +10,17 @@ import java.awt.Image;
 import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
 import scislak.popupmenu.CreatePopupMenu;
@@ -30,7 +32,7 @@ public class Stick {
     private JFrame frame = new JFrame();
     private static NotesMemory memory = new NotesMemory();
     private static String notebookType = "User";
-    private JLabel title;
+    private JTextField title;
     private JTextArea area;
     private CreatePopupMenu menuStick;
     private IconPopup menuIcon;
@@ -46,13 +48,15 @@ public class Stick {
     }
     
     public Stick(StickParameters stickParam) {
+    	System.out.println(stickParam.getLocalization());
     	menuStick = new CreatePopupMenu(frame);
     	menuIcon = new IconPopup(frame);
     	createAnsShowGui();
+    	createFunctionality();
+    	stickParam.setFrame(frame);
     	frame.setLocation(stickParam.getLocalization());
     	title.setText(stickParam.getTitle());
     	area.setText(stickParam.getNote());
-    	stickParam.setFrame(frame);
     }
 
     class MainPanel extends JPanel {
@@ -82,7 +86,10 @@ public class Stick {
         	JPanel titleBarButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     		JPanel titleBarTitle = new JPanel(new FlowLayout(FlowLayout.CENTER));
         	
-    		title = new JLabel("New stick");
+    		title = new JTextField("New stick");
+    		title.setEditable(false);
+    		title.setFocusable(false);
+    		title.setBorder(javax.swing.BorderFactory.createEmptyBorder());
         	JButton minimalizeButton = ClearButton.buttonAsImage("resources/menu.png");		
     		JButton exitButton = ClearButton.buttonAsImage("resources/error.png");	
     		
@@ -126,8 +133,27 @@ public class Stick {
                             frame.getLocation().y + me.getY() - pY);
                 }
             });
+            
+            title.addFocusListener(new FocusListener() {
+				
+				@Override
+				public void focusLost(FocusEvent e) {
+					System.out.println(title.getText());
+				}
+				
+				@Override
+				public void focusGained(FocusEvent e) {
+					title.selectAll();
+				}
+			});
         }
     }
+    
+    public void changeTitle() {
+		title.setEditable(true);
+		title.setFocusable(true);
+		title.requestFocus();
+	}
     
     public void updateStickParameters() {
 		for(int i = 0; i < NotesMemory.getNotes().size(); i++) {
@@ -140,6 +166,15 @@ public class Stick {
 			}
 		}
 	}
+    
+    public static void updateAllStickParameter() {
+    	for(int i = 0; i < NotesMemory.getNotes().size(); i++) {
+			StickParameters stick = NotesMemory.getNotes().get(i);
+			stick.setLocalization(stick.getFrame().getLocation());
+			stick.setNote(stick.getNote());
+			stick.setTitle(stick.getTitle());
+		}
+    }
 
     class OutsidePanel extends JPanel {
 		private static final long serialVersionUID = 1L;
@@ -201,4 +236,16 @@ public class Stick {
     public void setShow() {
     	frame.setVisible(true);
     }
+    
+    public JFrame getFrame() {
+    	return frame;
+    }
+    
+    public String getArea() {
+    	return area.getText();
+    }
+
+	public void setArea(String area) {
+		this.area.setText(area);
+	}
 }

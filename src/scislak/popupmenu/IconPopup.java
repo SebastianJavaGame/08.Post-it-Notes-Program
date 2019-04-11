@@ -12,6 +12,7 @@ import java.net.URISyntaxException;
 import javax.swing.JFrame;
 
 import scislak.program.AboutMe;
+import scislak.program.Stick;
 import scislak.program.TableOfNotes;
 import scislak.storage.NotesMemory;
 
@@ -25,13 +26,10 @@ public class IconPopup extends GeneralPopupMenu{
 	@Override
 	protected void create() {
 		addNewStick(); 
-		//addNewNoteFromClipboard();
 		addShowAllNotes();
 		addHideAllNotes();
 		addNotebooks();
 		addExplorer();
-		//addStore();
-		//addSetting();
 		addAbout();
 		addHelp();
 		addExit();
@@ -42,7 +40,11 @@ public class IconPopup extends GeneralPopupMenu{
 		MenuItem item = new MenuItem("Exit");
 		menu.add(item);
 		item.addActionListener((ActionEvent e) -> {
-				System.exit(0);
+			Stick.updateAllStickParameter();
+			NotesMemory m = new NotesMemory();
+			m.saveNotebooks();
+			m.addAllToPref();
+			System.exit(0);
 		});
 	}
 	
