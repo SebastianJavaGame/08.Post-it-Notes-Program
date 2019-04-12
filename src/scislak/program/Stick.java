@@ -138,7 +138,20 @@ public class Stick {
 				
 				@Override
 				public void focusLost(FocusEvent e) {
-					System.out.println(title.getText());
+					int i =0;
+					for(Stick stick: NotesMemory.getSticks()) {
+						if(Stick.this == stick) {
+							NotesMemory.getNotes().get(i).setTitle(title.getText());
+							offActive();
+							return;
+						}
+						i++;
+					}					
+				}
+				
+				private void offActive() {
+					title.setEditable(false);
+					title.setFocusable(false);
 				}
 				
 				@Override
